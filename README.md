@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# 3D Portfolio Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React portfolio application featuring interactive 3D graphics built with React Three Fiber, Three.js, and Zustand for state management.
 
-## Available Scripts
+## Performance Optimizations
 
-In the project directory, you can run:
+This application implements several key performance optimizations to prevent unnecessary re-renders during 3D interactions and maintain smooth 60fps animations:
 
-### `npm start`
+### 1. **React Three Fiber's `useFrame` Hook**
+- All 3D animations use React Three Fiber's `useFrame` hook, which runs in the render loop outside of React's reconciliation cycle
+- This prevents React re-renders during animations, as mesh transformations happen directly on Three.js objects via refs
+- Example: In `Hero3D.js`, the hover animation updates `mesh.scale.y` and `mesh.position` directly without triggering React state updates
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2. **Ref-Based Direct Manipulation**
+- All 3D meshes use `useRef` to store references to Three.js objects
+- Transformations (position, rotation, scale) are applied directly to the mesh objects, bypassing React's render cycle
+- This approach is essential for smooth animations with hundreds of objects (e.g., 2000 boxes in Hero3D)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 3. **Zustand for Global State Management**
+- Replaced React Context API with Zustand for global state management
+- Zustand provides fine-grained subscriptions, preventing unnecessary re-renders of components that don't use specific state slices
+- Only components that subscribe to specific store values re-render when those values change
+- The interaction log and selected object state are managed efficiently without cascading re-renders
 
-### `npm test`
+### 4. **Local State for UI Interactions**
+- Hover states (`isHovered`, `hovered`) are managed with local `useState` within individual 3D components
+- This isolates state changes to the specific component, preventing parent and sibling re-renders
+- Global state updates (via Zustand) only occur when necessary (e.g., tracking interactions for analytics)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 5. **Memoization with `useCallback` and `useMemo`**
+- Event handlers in `Playground.js` are wrapped with `useCallback` to maintain referential equality
+- The `clampPanelPosition` function is memoized to prevent recreation on every render
+- Navigation links in `NavBar.js` are memoized with `useMemo` to avoid unnecessary recalculations
 
-### `npm run build`
+### 6. **Throttling for Rapid Interactions**
+- Wireframe toggle in `Hero3D.js` implements time-based throttling (80ms) using `useRef` to track last toggle time
+- Prevents excessive state updates when users rapidly click multiple boxes
+- Reduces unnecessary re-renders and state synchronization overhead
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 7. **Delta-Based Smooth Animations**
+- Animations use delta time from `useFrame` for frame-rate independent movement
+- Smooth interpolation with `Math.min(1, delta * 8)` ensures consistent animation speed regardless of frame rate
+- Prevents janky animations during performance dips
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 8. **Event Propagation Control**
+- All 3D interaction handlers use `e.stopPropagation()` to prevent event bubbling
+- Reduces unnecessary event processing and potential parent component updates
+- Isolates interactions to the specific 3D object being interacted with
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 9. **Conditional Rendering in Animation Loops**
+- Early returns in `useFrame` hooks when refs are null or conditions aren't met
+- Prevents unnecessary calculations and Three.js operations
+- Example: `if (!mesh) return;` checks prevent errors and wasted computation
 
-### `npm run eject`
+### 10. **Optimized Shadow Rendering**
+- Shadow map sizes are set to reasonable values (1024x1024) to balance quality and performance
+- Shadow materials use opacity values to reduce rendering overhead
+- Shadows are only enabled where necessary (castShadow/receiveShadow flags)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Technologies Used
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **React 19** - UI framework
+- **React Three Fiber** - React renderer for Three.js
+- **Three.js** - 3D graphics library
+- **Zustand** - Lightweight state management
+- **Leva** - GUI controls for 3D playground
+- **@react-three/drei** - Useful helpers for R3F
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/
+├── components/
+│   ├── Hero3D.js      # Main 3D hero section with interactive boxes
+│   ├── About3D.js     # Rotating sphere component
+│   ├── Playground.js  # Interactive 3D playground with controls
+│   ├── NavBar.js      # Navigation component
+│   ├── Hero.js        # Hero section wrapper
+│   ├── About.js       # About section wrapper
+│   └── Contact.js     # Contact section
+├── store/
+│   └── useStore.js    # Zustand store for global state
+├── App.js             # Main app component
+└── App.css            # Global styles
+```
 
-## Learn More
+## Getting Started
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Install dependencies:
+```bash
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Start the development server:
+```bash
+npm start
+```
 
-### Code Splitting
+3. Build for production:
+```bash
+npm build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Key Features
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Interactive 3D Hero Section**: 2000+ interactive boxes with hover animations
+- **Rotating Sphere**: Clickable sphere with rotation toggle
+- **3D Playground**: Interactive TorusKnot with real-time parameter controls
+- **State Management**: Global state tracking for interactions and selected objects
+- **Responsive Design**: Optimized for various screen sizes
