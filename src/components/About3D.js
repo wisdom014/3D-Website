@@ -8,7 +8,7 @@ function RotatingSphere() {
   const [isRotating, setIsRotating] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const { setSelectedObject, addInteraction } = useStore();
-  const radius = Math.max(window.innerWidth, window.innerHeight) * 0.009;
+  const radius = Math.max(window.innerWidth) * 0.009;
 
   useFrame(() => {
     if (meshRef.current && isRotating) {
@@ -73,7 +73,7 @@ function About3D() {
         gl={{ antialias: true }}
       >
         <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
+        <spotLight position={[5, 5, 5]} intensity={1} angle={0.4} penumbra={0.35} decay={2} distance={50} />
         <pointLight position={[-5, -5, -5]} intensity={0.5} />
         <RotatingSphere />
       </Canvas>

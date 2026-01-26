@@ -34,7 +34,7 @@ function About() {
         <About3D />
         <div className='about-content'>
           <h2 className='about-title opacity' style={{ opacity }}>About Us</h2>
-          <p className='about-description opacity' style={{ opacity }}>We are a team of software engineers with a passion for building web applications.</p>
+          <p className='about-description opacity' style={{ opacity }}>We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications. We are a team of software engineers with a passion for building web applications.</p>
         </div>
       </div>
     </div>

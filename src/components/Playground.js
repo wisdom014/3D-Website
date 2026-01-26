@@ -41,7 +41,7 @@ function Playground() {
   //  knotY: { value: 0, min: -5, max: 5, step: 0.01, label: "Knot Y" },
   //  knotZ: { value: 0, min: -5, max: 5, step: 0.01, label: "Knot Z" },
    knotColor: { value: "#ff0000", label: "Knot Color" },
-   radius: { value: 1.3, min: 0.1, max: 3, step: 0.01, label: "Radius" },
+   radius: { value: 1, min: 0.1, max: 3, step: 0.01, label: "Radius" },
    tube: { value: 0.3, min: 0.1, max: 1, step: 0.01, label: "Tube" },
    tubularSegments: { value: 64, min: 8, max: 256, step: 1, label: "Tubular Segments" },
    radialSegments: { value: 9, min: 3, max: 32, step: 1, label: "Radial Segments" },
@@ -157,7 +157,7 @@ function Playground() {
      shadow-mapSize-width={1024}
      shadow-mapSize-height={1024}
    />
-   <OrbitControls speed={2.0} enableZoom={false} />
+   <OrbitControls speed={2.0} enableZoom={false} autoRotate={true} autoRotateSpeed={2} />
    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]} receiveShadow>
      <planeGeometry args={[20, 20]} />
      <shadowMaterial opacity={0.4} />
