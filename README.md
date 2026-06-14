@@ -26,7 +26,7 @@ I stored the values of everything in the canva in a const to make it  easier to 
 
 ### 6. **Toggling**
 
-- I implemented Wireframe toggle in `Hero3D.js` using `useRef` to track last toggle time
+- I implemented Wireframe toggle in `Hero3D.js` using `useRef` to track last toggle time.
 
 ## Key Features
 
